@@ -1,11 +1,14 @@
 package org.valkyrienskies.addon.control.renderer;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.EnumFacing;
+import org.valkyrienskies.addon.control.ValkyrienSkiesControl;
 import org.valkyrienskies.addon.control.block.multiblocks.TileEntityGiantPropellerPart;
+import org.valkyrienskies.mod.client.render.FastBlockModelRenderer;
 
 public class GiantPropellerPartTileEntityRenderer extends
     TileEntitySpecialRenderer<TileEntityGiantPropellerPart> {
@@ -26,10 +29,12 @@ public class GiantPropellerPartTileEntityRenderer extends
         int brightness = tileentity.getWorld().getCombinedLight(tileentity.getPos(), 0);
 
         if (!tileentity.isPartOfAssembledMultiblock()) {
-            GlStateManager.pushMatrix();
+            /*GlStateManager.pushMatrix();
             // GibsModelRegistry.renderGibsModel("aipropeller_geo", brightness);
             GibsAtomAnimationRegistry.getAnimation("giant_propeller").renderAnimation(1, brightness);
-            GlStateManager.popMatrix();
+            GlStateManager.popMatrix();*/
+            IBlockState state = ValkyrienSkiesControl.INSTANCE.vsControlBlocks.propellerCrate.getDefaultState();
+            FastBlockModelRenderer.renderBlockModel(tessellator, tileentity.getWorld(), state, brightness);
         } else if (tileentity.isMaster()) {
             GlStateManager.pushMatrix();
             EnumFacing propellerFacing = tileentity.getPropellerFacing();

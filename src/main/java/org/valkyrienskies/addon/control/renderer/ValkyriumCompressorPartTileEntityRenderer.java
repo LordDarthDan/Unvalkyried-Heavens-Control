@@ -5,9 +5,9 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.init.Blocks;
 import org.joml.AxisAngle4d;
 import org.joml.Vector3d;
+import org.valkyrienskies.addon.control.ValkyrienSkiesControl;
 import org.valkyrienskies.addon.control.block.multiblocks.TileEntityValkyriumCompressorPart;
 import org.valkyrienskies.mod.client.render.FastBlockModelRenderer;
 
@@ -31,10 +31,9 @@ public class ValkyriumCompressorPartTileEntityRenderer extends
 
         GlStateManager.pushMatrix();
         if (!tileentity.isPartOfAssembledMultiblock()) {
-            IBlockState state = Blocks.GOLD_BLOCK.getDefaultState();
+            IBlockState state = ValkyrienSkiesControl.INSTANCE.vsControlBlocks.gearsCrate.getDefaultState();//Blocks.GOLD_BLOCK.getDefaultState();
             Tessellator tessellator = Tessellator.getInstance();
-            FastBlockModelRenderer
-                .renderBlockModel(tessellator, tileentity.getWorld(), state, brightness);
+            FastBlockModelRenderer.renderBlockModel(tessellator, tileentity.getWorld(), state, brightness);
         } else {
             if (tileentity.isMaster()) {
                 double keyframe = tileentity.getCurrentKeyframe(partialTick);

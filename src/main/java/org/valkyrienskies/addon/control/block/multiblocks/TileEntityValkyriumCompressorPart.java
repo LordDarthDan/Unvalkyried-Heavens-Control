@@ -58,8 +58,7 @@ public class TileEntityValkyriumCompressorPart extends
 
     @Override
     public double getThrustMagnitude(PhysicsObject physicsObject) {
-        if (this.isPartOfAssembledMultiblock() && this
-            .getMaster() instanceof TileEntityValkyriumCompressorPart) {
+        if (this.isPartOfAssembledMultiblock() && this.getMaster() instanceof TileEntityValkyriumCompressorPart) {
             return this.getMaxThrust() * this.getMaster()
                 .getThrustMultiplierGoal() * this.getCurrentValkyriumEfficiency(physicsObject);
         } else {
@@ -89,7 +88,8 @@ public class TileEntityValkyriumCompressorPart extends
 
     @Override
     public boolean attemptToAssembleMultiblock(World worldIn, BlockPos pos, EnumFacing facing) {
-        List<IMultiblockSchematic> valkyriumEngineMultiblockSchematics = MultiblockRegistry.getSchematicsWithPrefix("multiblock_valkyrium_compressor");
+        List<IMultiblockSchematic> valkyriumEngineMultiblockSchematics = MultiblockRegistry.getSchematicsWithPrefix(
+            "multiblock_valkyrium_compressor");
         for (IMultiblockSchematic schematic : valkyriumEngineMultiblockSchematics) {
             if (schematic.attemptToCreateMultiblock(worldIn, pos)) {
                 return true;

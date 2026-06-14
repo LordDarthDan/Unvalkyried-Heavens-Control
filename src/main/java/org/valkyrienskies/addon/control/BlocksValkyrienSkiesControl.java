@@ -2,6 +2,9 @@ package org.valkyrienskies.addon.control;
 
 import net.minecraft.item.ItemBlock;
 import org.valkyrienskies.addon.control.block.*;
+import org.valkyrienskies.addon.control.block.crates.BlockGearsCrate;
+import org.valkyrienskies.addon.control.block.crates.BlockHeavyDutyCrate;
+import org.valkyrienskies.addon.control.block.crates.BlockSailCrate;
 import org.valkyrienskies.addon.control.block.engine.BlockNormalEngine;
 import org.valkyrienskies.addon.control.block.engine.BlockRedstoneEngine;
 import org.valkyrienskies.addon.control.block.multiblocks.BlockGiantPropellerPart;
@@ -43,6 +46,12 @@ public class BlocksValkyrienSkiesControl {
     public final Block giantPropellerPart;
     public final Block rotationAxle;
 
+    public final Block gearsCrate;
+
+    public final Block heavyCrate;
+
+    public final Block propellerCrate;
+
     public BlocksValkyrienSkiesControl() {
         physicsInfuser = registerBlock(new BlockPhysicsInfuser("physics_infuser"));
         physicsInfuserCreative = registerBlock(new BlockPhysicsInfuserCreative());
@@ -79,6 +88,10 @@ public class BlocksValkyrienSkiesControl {
         giantPropellerPart = registerBlock(new BlockGiantPropellerPart());
         rotationAxle = registerBlock(new BlockRotationAxle());
         gearbox = registerBlock(new BlockGearbox());
+
+        gearsCrate = registerBlock(new BlockGearsCrate());
+        heavyCrate = registerBlock(new BlockHeavyDutyCrate());
+        propellerCrate = registerBlock(new BlockSailCrate());
     }
 
     private <T extends Block> T registerBlock(T block) {

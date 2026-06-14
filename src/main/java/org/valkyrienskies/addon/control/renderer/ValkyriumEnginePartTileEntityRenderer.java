@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.init.Blocks;
+import org.valkyrienskies.addon.control.ValkyrienSkiesControl;
 import org.valkyrienskies.addon.control.block.multiblocks.TileEntityValkyriumEnginePart;
 import org.valkyrienskies.mod.client.render.FastBlockModelRenderer;
 
@@ -29,10 +29,9 @@ public class ValkyriumEnginePartTileEntityRenderer extends
 
         GlStateManager.pushMatrix();
         if (!tileentity.isPartOfAssembledMultiblock()) {
-            IBlockState state = Blocks.IRON_BLOCK.getDefaultState();
+            IBlockState state = ValkyrienSkiesControl.INSTANCE.vsControlBlocks.heavyCrate.getDefaultState();
             Tessellator tessellator = Tessellator.getInstance();
-            FastBlockModelRenderer
-                .renderBlockModel(tessellator, tileentity.getWorld(), state, brightness);
+            FastBlockModelRenderer.renderBlockModel(tessellator, tileentity.getWorld(), state, brightness);
         } else if (tileentity.isMaster()) {
             // Im not sure why this has to be done, something is wrong with my rotation
             // intuition.
