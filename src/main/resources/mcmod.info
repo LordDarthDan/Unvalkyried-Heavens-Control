@@ -1,9 +1,9 @@
 [
   {
     "modid": "vs_control",
-    "name": "Valkyrien Skies Control",
-    "description": "Adds new items and blocks to create and control ships.",
-    "version": "${version}",
+    "name": "Valkyrien Skies: Unvalkyried Heavens - Control",
+    "description": "Adds the items and blocks necessary to create and control ships.",
+    "version": "1.1.2",
     "url": "https://www.curseforge.com/minecraft/mc-mods/valkyrien-skies-control",
     "logoFile": "vs_logo.png",
     "screenshots": [],
