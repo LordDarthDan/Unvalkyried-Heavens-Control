@@ -48,31 +48,34 @@ public class TileEntityRudderPart extends
     public Vector3d getForcePositionInShipSpace() {
         Vector3d facingOffset = getForcePosRelativeToAxleInShipSpace();
         if (facingOffset != null) {
-            return new Vector3d(facingOffset.x + pos.getX() + .5, facingOffset.y + pos.getY() + .5,
-                facingOffset.z + pos.getZ() + .5);
+            return new Vector3d(
+                    facingOffset.x + pos.getX() + .5,
+                    facingOffset.y + pos.getY() + .5,
+                    facingOffset.z + pos.getZ() + .5);
         } else {
             return null;
         }
     }
 
     private Vector3d getForcePosRelativeToAxleInShipSpace() {
-        if (getRudderAxleSchematic().isPresent()) {
-            Vec3i directionFacing = getRudderAxleFacingDirection().get().getDirectionVec();
-            Vec3i directionAxle = this.getRudderAxleAxisDirection().get().getDirectionVec();
-            Vector3d facingOffset = new Vector3d(directionFacing.getX(), directionFacing.getY(),
-                directionFacing.getZ());
-            double axleLength = getRudderAxleLength().get();
-            // Then estimate the torque output for both, and use the one that has a positive
-            // dot product to torqueAttemptNormal.
-            facingOffset.mul(axleLength / 2D);
-            // Then rotate the offset vector
-            AxisAngle4d rotation = new AxisAngle4d(Math.toRadians(rudderAngle), directionAxle.getX(), directionAxle.getY(), directionAxle.getZ());
+        if (!(this.getRudderAxleSchematic().isPresent() && this.getRudderAxleFacingDirection().isPresent()
+                && this.getRudderAxleAxisDirection().isPresent() && this.getRudderAxleLength().isPresent())
+        ) return null;
 
-            rotation.transform(facingOffset);
-            return facingOffset;
-        } else {
-            return null;
-        }
+        Vec3i directionFacing = getRudderAxleFacingDirection().get().getDirectionVec();
+        Vec3i directionAxle = this.getRudderAxleAxisDirection().get().getDirectionVec();
+        Vector3d facingOffset = new Vector3d(directionFacing.getX(), directionFacing.getY(),
+            directionFacing.getZ());
+        double axleLength = getRudderAxleLength().get();
+        // Then estimate the torque output for both, and use the one that has a positive
+        // dot product to torqueAttemptNormal.
+        facingOffset.mul(axleLength / 2D);
+        // Then rotate the offset vector
+        AxisAngle4d rotation = new AxisAngle4d(Math.toRadians(this.getEffectiveRudderAngle()),
+            directionAxle.getX(), directionAxle.getY(), directionAxle.getZ());
+
+        rotation.transform(facingOffset);
+        return facingOffset;
     }
 
     public Vector3d calculateForceFromVelocity(PhysicsObject physicsObject) {
@@ -125,17 +128,27 @@ public class TileEntityRudderPart extends
 
     @Override
     public Vector3dc getForceOutputUnoriented(double secondsToApply, PhysicsObject physicsObject) {
-        return null;
+        Vector3d rudderForce = this.calculateForceFromVelocity(physicsObject);
+        if (rudderForce == null || rudderForce.lengthSquared() <= 1.0D) {
+            return null;
+        }
+        return rudderForce.mul(secondsToApply);
     }
 
     @Override
     public Vector3dc getForceOutputNormal(double secondsToApply, PhysicsObject object) {
-        return null;
+        Vector3d rudderForce = this.calculateForceFromVelocity(object);
+        if (rudderForce == null || rudderForce.lengthSquared() <= 1.0D) {
+            return null;
+        }
+        return rudderForce.normalize();
     }
 
     @Override
     public double getThrustMagnitude(PhysicsObject physicsObject) {
-        return 0;
+        Vector3d rudderForce = this.calculateForceFromVelocity(physicsObject);
+        if (rudderForce == null) return 0;
+        return rudderForce.length();
     }
 
     public Optional<EnumFacing> getRudderAxleAxisDirection() {
@@ -186,11 +199,18 @@ public class TileEntityRudderPart extends
         return this.prevRudderAngle + ((this.rudderAngle - this.prevRudderAngle) * partialTicks);
     }
 
+    private double getEffectiveRudderAngle() {
+        if (this.isPartOfAssembledMultiblock() && !this.isMaster()) {
+            TileEntityRudderPart master = this.getMaster();
+            if (master != null) return master.rudderAngle;
+        }
+        return this.rudderAngle;
+    }
+
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
-        if (this.isPartOfAssembledMultiblock() && this.isMaster() && getRudderAxleAxisDirection()
-            .isPresent()) {
+        if (this.isPartOfAssembledMultiblock() && this.isMaster() && getRudderAxleAxisDirection().isPresent()) {
             BlockPos minPos = this.pos;
             EnumFacing axleAxis = getRudderAxleAxisDirection().get();
             EnumFacing axleFacing = getRudderAxleFacingDirection().get();
